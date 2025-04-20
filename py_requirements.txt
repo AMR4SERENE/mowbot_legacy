@@ -1,0 +1,9 @@
+numpy
+haversine
+pyproj
+pytz
+scipy
+
+pydantic
+
+pyserial
