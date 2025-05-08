@@ -1,6 +1,6 @@
 {
     "name": "mowbot_legacy_dev",
-    "image": "ghcr.io/serene4uto/mowbot-legacy-base",
+    "image": "ghcr.io/serene4mr/mowbot_legacy",
     "runArgs": [
         "--name", "mowbot_legacy_dev",
         "--net", "host",
