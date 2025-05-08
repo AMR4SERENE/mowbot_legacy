@@ -28,6 +28,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
   libqt5serialport5-dev \
   python3-tk \
   psmisc \
+  libssl-dev \
   && /mowbot_legacy/cleanup_apt.sh \
   && mkdir -p ~/.ssh \
   && ssh-keyscan github.com >> ~/.ssh/known_hosts
