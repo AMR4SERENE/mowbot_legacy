@@ -147,7 +147,6 @@ build_images() {
     set -x
     docker buildx bake --load --progress=plain -f "$SCRIPT_DIR/docker-bake.hcl" \
         --set "*.context=$WORKSPACE_ROOT" \
-        --set "*.ssh=default" \
         --set "*.platform=$platform" \
         --set "*.args.ROS_DISTRO=$rosdistro" \
         --set "*.args.BASE_IMAGE=$base_image" \

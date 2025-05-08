@@ -35,8 +35,7 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
   && ssh-keyscan github.com >> ~/.ssh/known_hosts
 
 # Set up base environment
-RUN --mount=type=ssh \
-  --mount=type=cache,target=/var/cache/apt,sharing=locked \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
   ./setup-dev-env.sh -y \
   && /mowbot_legacy/cleanup_apt.sh \
   && echo "source /opt/ros/${ROS_DISTRO}/setup.bash" > /etc/bash.bashrc
@@ -49,8 +48,7 @@ RUN /mowbot_legacy/resolve_rosdep_keys.sh /mowbot_legacy/src ${ROS_DISTRO} \
 
 # Install rosdep dependencies
 # hadolint ignore=SC2002
-RUN --mount=type=ssh \
-  --mount=type=cache,target=/var/cache/apt,sharing=locked \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
   apt-get update \
   && cat /tmp/rosdep-main-depend-packages.txt| xargs apt-get install -y --no-install-recommends \
   && /mowbot_legacy/cleanup_apt.sh
