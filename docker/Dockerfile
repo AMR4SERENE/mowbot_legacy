@@ -56,6 +56,15 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 # Install Python packages
 RUN pip install --no-cache-dir -r /mowbot_legacy/py_requirements.txt
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ros-${ROS_DISTRO}-builtin-interfaces \
+    && ldconfig \
+    && mkdir -p /opt/ros/${ROS_DISTRO}/lib/$(uname -m)-linux-gnu/ \
+    && if [ ! -L /opt/ros/${ROS_DISTRO}/lib/$(uname -m)-linux-gnu/libbuiltin_interfaces__rosidl_generator_c.so ]; then \
+       ln -s /opt/ros/${ROS_DISTRO}/lib/libbuiltin_interfaces__rosidl_generator_c.so \
+             /opt/ros/${ROS_DISTRO}/lib/$(uname -m)-linux-gnu/libbuiltin_interfaces__rosidl_generator_c.so; \
+       fi
+
 # hadolint ignore=SC1091
 RUN --mount=type=cache,target=${CCACHE_DIR} \
     # --mount=type=bind,source=/src,target=/mowbot_legacy/src \
