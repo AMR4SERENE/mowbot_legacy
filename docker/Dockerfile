@@ -9,8 +9,6 @@ ENV CCACHE_DIR="/root/.ccache"
 COPY setup-dev-env.sh amd64.env arm64.env py_requirements.txt /mowbot_legacy/
 COPY docker/scripts/cleanup_apt.sh /mowbot_legacy/cleanup_apt.sh
 RUN chmod +x /mowbot_legacy/cleanup_apt.sh
-COPY docker/scripts/cleanup_system.sh /mowbot_legacy/cleanup_system.sh
-RUN chmod +x /mowbot_legacy/cleanup_system.sh
 COPY docker/scripts/resolve_rosdep_keys.sh /mowbot_legacy/resolve_rosdep_keys.sh
 RUN chmod +x /mowbot_legacy/resolve_rosdep_keys.sh
 COPY docker/scripts/build_and_clean.sh /mowbot_legacy/build_and_clean.sh
