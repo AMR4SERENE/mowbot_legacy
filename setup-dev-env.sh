@@ -1,4 +1,4 @@
-  #!/usr/bin/env bash
+#!/usr/bin/env bash
 # Set up development environment for Mowbot Legacy.
 # Usage: setup-dev-env.sh ...
 # Note: -y option is only for CI.
