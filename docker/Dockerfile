@@ -60,10 +60,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-${ROS_DISTRO}-builtin-interfaces \
     && ldconfig \
     && mkdir -p /opt/ros/${ROS_DISTRO}/lib/$(uname -m)-linux-gnu/ \
-    && if [ ! -L /opt/ros/${ROS_DISTRO}/lib/$(uname -m)-linux-gnu/libbuiltin_interfaces__rosidl_generator_c.so ]; then \
-       ln -s /opt/ros/${ROS_DISTRO}/lib/libbuiltin_interfaces__rosidl_generator_c.so \
-             /opt/ros/${ROS_DISTRO}/lib/$(uname -m)-linux-gnu/libbuiltin_interfaces__rosidl_generator_c.so; \
-       fi
+    && find /opt/ros/${ROS_DISTRO}/lib/ -name "*.so" | while read lib; do \
+         base_name=$(basename "$lib"); \
+         if [ ! -e "/opt/ros/${ROS_DISTRO}/lib/$(uname -m)-linux-gnu/$base_name" ]; then \
+           ln -s "$lib" "/opt/ros/${ROS_DISTRO}/lib/$(uname -m)-linux-gnu/$base_name"; \
+         fi; \
+       done \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # hadolint ignore=SC1091
 RUN --mount=type=cache,target=${CCACHE_DIR} \
