@@ -1,15 +1,14 @@
 #!/bin/bash
 
-# get home directory
 HOME_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-# get the script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+IMAGE_NAME="mowbot_legacy"
 
 # run udev rules
 bash "$SCRIPT_DIR/udev/create_udev_rules.sh"
 
-# first, build or pull the docker image
-bash "$SCRIPT_DIR/docker/build.sh"
+# pull the docker image
+docker pull "$IMAGE_NAME"
 
 # copy common data directory to $HOME_DIR
 cp -r "$SCRIPT_DIR/mowbot_legacy_data" "$HOME_DIR/"
