@@ -79,16 +79,41 @@ load_env() {
 
 #install some necessary apt packages
 install_apt_packages() {
-    sudo apt-get update
-    sudo apt-get install -y \
-        curl \
-        git \
-        docker-buildx
+    # Ensure ~/.local/bin is in PATH for user-installed Python scripts
+    export PATH="$HOME/.local/bin:$PATH"
+    if ! grep -q 'export PATH="$HOME/.local/bin:$PATH"' ~/.bashrc; then
+        echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+    fi
 
-    curl -s https://packagecloud.io/install/repositories/dirk-thomas/vcstool/script.deb.sh | sudo bash
     sudo apt-get update
     sudo apt-get install -y \
-        python3-vcstool
+        git \
+        python3 \
+        python3-pip \
+        ca-certificates \
+        curl \
+        gnupg
+
+    # Add Docker's official GPG key and repository if not already present
+    if [ ! -f /etc/apt/keyrings/docker.gpg ]; then
+        sudo install -m 0755 -d /etc/apt/keyrings
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+        sudo chmod a+r /etc/apt/keyrings/docker.gpg
+    fi
+
+    if [ ! -f /etc/apt/sources.list.d/docker.list ]; then
+        echo \
+          "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+          $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+          sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    fi
+
+    sudo apt-get update
+    sudo apt-get install -y \
+        docker-buildx-plugin
+
+    # Install vcstool for the current user
+    python3 -m pip install --user --upgrade vcstool
 }
 
 
@@ -128,7 +153,7 @@ build_images() {
         --set "*.args.BASE_IMAGE=$base_image" \
         --set "*.args.SETUP_ARGS=$setup_args" \
         --set "*.args.LIB_DIR=$lib_dir" \
-        --set "base.tags=ghcr.io/serene4mr/mowbot-legacy-base:latest"
+        --set "base.tags=ghcr.io/serene4mr/mowbot_legacy:latest"
     set +x
 }
 
