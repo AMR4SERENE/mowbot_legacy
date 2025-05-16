@@ -53,7 +53,7 @@ jobs:
   #         docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest-arm64
 
   create-manifest:
-    needs: [build-and-push-amd64, build-and-push-arm64]
+    needs: [build-and-push-amd64]
     runs-on: ubuntu-22.04
     steps:
       - name: Set up QEMU
