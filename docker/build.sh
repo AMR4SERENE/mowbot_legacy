@@ -10,6 +10,7 @@ print_help() {
     echo "  --help          Display this help message"
     echo "  -h              Display this help message"
     echo "  --platform      Specify the platform (default: current platform)"
+    echo "  --push          Push the built images to the registry"
     echo ""
     echo "Note: The --platform option should be one of 'linux/amd64' or 'linux/arm64'."
 }
@@ -23,19 +24,23 @@ WORKSPACE_ROOT="$SCRIPT_DIR/.."
 parse_arguments() {
     while [ "$1" != "" ]; do
         case "$1" in
-        --help | -h)
-            print_help
-            exit 1
-            ;;
-        --platform)
-            option_platform="$2"
-            shift
-            ;;
-        *)
-            echo "Unknown option: $1"
-            print_help
-            exit 1
-            ;;
+            --help | -h)
+                print_help
+                exit 0
+                ;;
+            --platform)
+                option_platform="$2"
+                shift 2
+                continue
+                ;;
+            --push)
+                option_push=1
+                ;;
+            *)
+                echo "Unknown option: $1"
+                print_help
+                exit 1
+                ;;
         esac
         shift
     done
@@ -162,6 +167,23 @@ remove_dangling_images() {
     docker image prune -f
 }
 
+# Push images to registry
+push_images() {
+    if [ -n "$option_push" ]; then
+        if [ "$platform" = "linux/arm64" ]; then
+            push_tag_name="arm64"
+        elif [ "$platform" = "linux/amd64" ]; then
+            push_tag_name="amd64"
+        else
+            echo "Unsupported platform: $platform"
+            exit 1
+        fi
+
+        echo "Pushing images to registry..."
+        docker tag ghcr.io/serene4mr/mowbot_legacy:latest ghcr.io/serene4mr/mowbot_legacy:latest-$push_tag_name
+        docker push ghcr.io/serene4mr/mowbot_legacy:latest-$push_tag_name
+    fi
+}
 
 # Main script execution
 parse_arguments "$@"
@@ -172,3 +194,4 @@ install_apt_packages
 clone_repositories
 build_images
 remove_dangling_images
+push_images
