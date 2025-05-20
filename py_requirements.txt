@@ -3,7 +3,7 @@ haversine
 pyproj
 pytz
 scipy
-
+requests
 pydantic
 
 pyserial
